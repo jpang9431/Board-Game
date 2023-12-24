@@ -1,19 +1,65 @@
-abstract class Piece extends Range{
-  private String letter = null;
-  private int team = -1;
-  private boolean isAlive = true;
-  Piece(int[] minRange, int[] maxRange, boolean diag, Game game, String letter, int team){
-    super(minRange, maxRange, diag, game);
-    this.letter;
-    this.team;
+import java.util.ArrayList;
+import java.awt.Color;
+class Piece{
+  private ArrayList<int[]> tempArray = new ArrayList<int[]>();
+  private String letter;
+  private Color color;
+  protected int team;
+  protected boolean canAct = true;;
+  private int[][] check  = {
+    {-1,-1},
+    {-1,1},
+    {1,1},
+    {-1,1},
+    {-1,0},
+    {0,1},
+    {1,0},
+    {0,-1}
+  };
+  
+  Piece(String letter, Color color, int team){
+    this.letter = letter;
+    this.color = color;
+    this.team = team;
   }
-  public String getLetter(){
-    return letter;
+
+  public Color getColor(){
+    return color;
   }
+    
   public int getTeam(){
     return team;
   }
-  public boolean getAlive(){
-    return alive;
+
+  public ArrayList<int[]> getSquares(int row, int col, boolean card, boolean diag, int min, int max){
+    ArrayList<int[]> squares = new ArrayList<int[]>();
+    int checkMax = 8;
+    int checkMin = 0;
+    if (!diag){
+      checkMin = 4;
+    }
+    if (!card){
+      checkMax = 4;
+    }
+    for (int i=min; i<max; i++){
+      for (int square=checkMin; square<checkMax; square++){
+        int[] cord = new int[2];
+        cord[0] = row + check[square][0]*i;
+        cord[1] = col + check[square][1]*i;
+        squares.add(cord);
+      }
+    }
+    return squares;
+  }
+  
+  public ArrayList<int[]>move(Coordinate[][] board, int row, int col, boolean card, boolean diag, int min, int max){
+    ArrayList<int[]> squares = getSquares(row, col, card, diag, min, max);
+    for (int i=0; i<squares.size(); i++){
+      int[] square = squares.get(i);
+      if (board[square[0]][square[1]].getPiece()!=null){
+        squares.remove(squares.get(i));
+      }
+    }
+    return squares;
   }
 }

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
 interface Shootable{
-  ArrayList<Coordinate> getTarget();
-  boolean canShoot(Coordinate cord);
+  ArrayList<int[]> getShootable(Coordinate[][] board, int row, int col);
 }

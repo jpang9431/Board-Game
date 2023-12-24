@@ -1,21 +1,29 @@
 class Coordinate{
-  private int row, col;
-  private Piece piece = null;
-  private boolean isFroze = false;
-  Coordinate(int row, int col){
-    this.row = row;
-    this.col = col;
+  private Object piece = null;
+  private int isFreeze = 0;
+
+  Coordinate(Object piece){
+    this.piece = piece;
   }
-  public int[] getCord(){
-    int[] returnInt = new int[2];
-    returnInt[0] = row;
-    returnInt[1] = col;
-    return returnInt;
+
+  Coordinate(){}
+  
+  public boolean isFrozen(){
+    return isFreeze<=0;
   }
-  public boolean getFreeze(){
-    return isFroze;
+  public boolean turn(){
+    if (isFreeze>0){
+      isFreeze--;
+    }
+    return isFrozen();
   }
-  public Piece getPiece(){
+  
+  public Object getPiece(){
     return piece;
+  }
+
+  
+  public void setPiece(Object piece){
+    this.piece = piece;
   }
 }

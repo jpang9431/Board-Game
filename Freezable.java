@@ -1,5 +1,4 @@
 import java.util.ArrayList;
 interface Freezable{
-  ArrayList<Coordinate> getFrozen();
-  boolean canFreeze(Coordinate cord);
+  ArrayList<int[]> getFreezeable(Coordinate[][] board, int row, int col);
 }
