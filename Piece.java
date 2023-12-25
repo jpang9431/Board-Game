@@ -3,7 +3,7 @@ import java.awt.Color;
 class Piece{
   private ArrayList<int[]> tempArray = new ArrayList<int[]>();
   private String letter;
-  private Color color;
+  private String icon;
   protected int team;
   protected boolean canAct = true;;
   private int[][] check  = {
@@ -17,9 +17,9 @@ class Piece{
     {0,-1}
   };
   
-  Piece(String letter, Color color, int team){
+  Piece(String letter, String icon, int team){
     this.letter = letter;
-    this.color = color;
+    this.icon = icon;
     this.team = team;
   }
 
