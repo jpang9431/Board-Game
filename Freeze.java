@@ -2,8 +2,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 class Freeze extends Piece implements Freezable {
-  Freeze(int team) {
-    super("F", Color.CYAN, team);
+  Freeze(String icon, int team) {
+    super(icon, team);
   }
 
   public ArrayList<int[]> move(Coordinate[][] board, int row, int col) {

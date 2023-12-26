@@ -3,34 +3,45 @@ import java.awt.Color;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.Dimension;
+import java.awt.*;
 class Game extends JPanel implements ActionListener {
   private Coordinate[][] board = new Coordinate[5][5];
   private JButton[][] buttonBoard = new JButton[5][5];
   private ArrayList<Object> team1 = new ArrayList<Object>();
   private ArrayList<Object> team2 = new ArrayList<Object>();
-  private String[] instaceNames = { "S", "F", "FS", "F", "S" };
+  private String[] fileNames = {"S.png", "F.png", "FS.png", "F.png", "S.png"};
   private Color[] pieceColors = {Color.RED, Color.CYAN, Color.MAGENTA, Color.CYAN, Color.RED};
   private int teamTurn = -1;
   private Color[] colors = {Color.WHITE, Color.BLACK};
+  private int size;
+  private static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+  public static final int width = dim.width, height = dim.height, sqaure = height/5;
+  private JFrame frame = new JFrame();
   public void startGame(){
+    this.setSize(dim);
+    this.setLayout(null);
+    System.out.println(sqaure);
     int row = 0;
     for (int i=0; i<2; i++){
-      for (int name=0; name<instaceNames.length; name++){
+      for (int name=0; name<fileNames.length; name++){
         if (i==0){
-          team1.add(getInstance(instaceNames[name], -1));
+          team1.add(getInstance(fileNames[name], -1));
           row = 0;
           board[row][name] = new Coordinate(team1.get(name));
         } else if (i==1){
-          team2.add(getInace(instaceNames[name], -1));
+          team2.add(getInstance(fileNames[name], -1));
           row = board.length-1;
           board[row][name] = new Coordinate(team2.get(name));
         }
-        buttonBoard[row][name] = new JButton(instanceNames[name]);
-        buttonBoard[row][name].setBackGround(pieceColors[name]);
-        buttonBoard[row][name].setForeground(colors[i]);
-        buttonBoard[row][name].addActionListener(this);
-        buttonBoard[row][name].setActionCommand(row+","+col);
+        Icon icon = new ImageIcon()
+        buttonBoard[row][name] = new JButton();
+        if (teamTurn==-1){
+          buttonBoard[row][name].setBackground(colors[0]);
+        } else {
+          buttonBoard[row][name].setBackground(colors[1]);
+        }
+        //buttonBoard[row][name]
       }
     }    
     for (int curRow=0; curRow<buttonBoard.length; curRow++){
@@ -44,17 +55,25 @@ class Game extends JPanel implements ActionListener {
             buttonBoard[curRow][curCol].setBackground(Color.BLACK);
           }
         }
+        this.add(buttonBoard[curRow][curCol]);
+        buttonBoard[curRow][curCol].setBounds(curCol*sqaure, curRow*sqaure, sqaure, sqaure);
+        buttonBoard[curRow][curCol].addActionListener(this);
+        buttonBoard[curRow][curCol].setActionCommand(curRow+","+curCol);
       }
     }
+    frame.setContentPane(this);
+    frame.setSize(dim);
+    frame.setVisible(true);
   }
 
+
   public Object getInstance(String name, int team) {
-    if (name.equals("F")) {
-      return (Object) new Freeze(team);
-    } else if (name.equals("S")) {
-      return (Object) new Shoot(team);
+    if (name.equals("F.png")) {
+      return (Object) new Freeze(name, team);
+    } else if (name.equals("S.png")) {
+      return (Object) new Shoot(name, team);
     } else {
-      return (Object) new FreezeShoot(team);
+      return (Object) new FreezeShoot(name, team);
     }
   }
 
@@ -86,5 +105,7 @@ class Game extends JPanel implements ActionListener {
 
   public static void main(String[] args) {
     System.out.println("Run");
+    Game game = new Game();
+    game.startGame();
   }
 }

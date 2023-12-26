@@ -1,9 +1,13 @@
 import java.util.ArrayList;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.imageio.ImageIO;
+import java.awt.*;
 class Piece{
   private ArrayList<int[]> tempArray = new ArrayList<int[]>();
-  private String letter;
   private String icon;
+  private final String path = "Icons/";
   protected int team;
   protected boolean canAct = true;;
   private int[][] check  = {
@@ -17,14 +21,9 @@ class Piece{
     {0,-1}
   };
   
-  Piece(String letter, String icon, int team){
-    this.letter = letter;
-    this.icon = icon;
+  Piece(String icon, int team){
+    this.icon = path+icon;
     this.team = team;
-  }
-
-  public Color getColor(){
-    return color;
   }
     
   public int getTeam(){
@@ -61,5 +60,19 @@ class Piece{
       }
     }
     return squares;
+  }
+
+  public BufferedImage getImage(){
+    BufferedImage returnImage = new BufferedImage(Game.sqaure, Game.sqaure, BufferedImage.TYPE_3BYTE_BGR);
+    try{
+      returnImage = ImageIO.read(new File(icon));
+    } catch(Exception e){
+      e.printStackTrace();
+    }
+    
+    Image image = returnImage.getScaledInstance(Game.sqaure, Game.sqaure, Image.SCALE_SMOOTH);
+    returnImage = new BufferedImage(Game.sqaure, Game.sqaure, BufferedImage.TYPE_3BYTE_BGR);
+    returnImage.getGraphics().drawImage(image, 0, 0, null);
+    return returnImage;
   }
 }

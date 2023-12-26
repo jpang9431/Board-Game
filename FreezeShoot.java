@@ -1,8 +1,8 @@
 import java.awt.Color;
 import java.util.ArrayList;
 class FreezeShoot extends Piece implements Shootable, Freezable{
-  FreezeShoot(int team){
-    super("FS", Color.MAGENTA, team);
+  FreezeShoot(String icon, int team){
+    super(icon, team);
   }
   
   public ArrayList<int[]> move(Coordinate[][] board, int row, int col){
@@ -19,7 +19,7 @@ class FreezeShoot extends Piece implements Shootable, Freezable{
     ArrayList<int[]> squares = getSquares(row, col, true, true, 2, 3);
     for (int i=0; i<squares.size(); i++){
       int[] square = squares.get(i);
-      Piece piece = board[square[0]][square[1]].getPiece();
+      Piece piece = (Piece) board[square[0]][square[1]].getPiece();
       if (piece==null||piece.getTeam()==team){
         squares.remove(square);
       }
