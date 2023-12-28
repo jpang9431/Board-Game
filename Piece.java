@@ -14,7 +14,7 @@ class Piece{
     {-1,-1},
     {-1,1},
     {1,1},
-    {-1,1},
+    {1,-1},
     {-1,0},
     {0,1},
     {1,0},
@@ -45,10 +45,16 @@ class Piece{
         int[] cord = new int[2];
         cord[0] = row + check[square][0]*i;
         cord[1] = col + check[square][1]*i;
-        squares.add(cord);
+        if(cord[0]>=0&&cord[1]>=0&&cord[0]<Game.boardSize&&cord[1]<Game.boardSize){
+          squares.add(cord);
+        }
       }
     }
     return squares;
+  }
+
+  public ArrayList<int[]>move(Coordinate[][] board, int row, int col){
+    return null;
   }
   
   public ArrayList<int[]>move(Coordinate[][] board, int row, int col, boolean card, boolean diag, int min, int max){
@@ -56,9 +62,13 @@ class Piece{
     for (int i=0; i<squares.size(); i++){
       int[] square = squares.get(i);
       if (board[square[0]][square[1]].getPiece()!=null){
-        squares.remove(squares.get(i));
+        squares.remove(i);
+        i--;
       }
+      
     }
+    
+    
     return squares;
   }
 
@@ -74,5 +84,9 @@ class Piece{
     returnImage = new BufferedImage(Game.sqaure, Game.sqaure, BufferedImage.TYPE_3BYTE_BGR);
     returnImage.getGraphics().drawImage(image, 0, 0, null);
     return returnImage;
+  }
+
+  public String getIcon(){
+    return icon.substring(7, icon.length()-4);
   }
 }
