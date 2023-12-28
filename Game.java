@@ -10,7 +10,8 @@ class Game extends JPanel implements ActionListener {
   private JButton[][] buttonBoard = new JButton[5][5];
   private ArrayList<Object> team1 = new ArrayList<Object>();
   private ArrayList<Object> team2 = new ArrayList<Object>();
-  private String[] fileNames = {"S.png", "F.png", "FS.png", "F.png", "S.png"};
+  private String[] fileNames = {"BS.png", "BF.png", "BFS.png", "BF.png", "BS.png"};
+  private String[] altFileNames = {"WS.png", "WF.png", "WFS.png", "WF.png", "WS.png"};
   private Color[] pieceColors = {Color.RED, Color.CYAN, Color.MAGENTA, Color.CYAN, Color.RED};
   private int teamTurn = -1;
   private Color[] colors = {Color.WHITE, Color.BLACK};
@@ -21,7 +22,6 @@ class Game extends JPanel implements ActionListener {
   public void startGame(){
     this.setSize(dim);
     this.setLayout(null);
-    System.out.println(sqaure);
     int row = 0;
     for (int i=0; i<2; i++){
       for (int name=0; name<fileNames.length; name++){
@@ -30,18 +30,17 @@ class Game extends JPanel implements ActionListener {
           row = 0;
           board[row][name] = new Coordinate(team1.get(name));
         } else if (i==1){
-          team2.add(getInstance(fileNames[name], -1));
+          team2.add(getInstance(altFileNames[name], 1));
           row = board.length-1;
           board[row][name] = new Coordinate(team2.get(name));
         }
-        Icon icon = new ImageIcon()
-        buttonBoard[row][name] = new JButton();
+        Piece curPiece = (Piece) board[row][name].getPiece();
+        buttonBoard[row][name] = new JButton(new ImageIcon(curPiece.getImage()));
         if (teamTurn==-1){
           buttonBoard[row][name].setBackground(colors[0]);
         } else {
           buttonBoard[row][name].setBackground(colors[1]);
         }
-        //buttonBoard[row][name]
       }
     }    
     for (int curRow=0; curRow<buttonBoard.length; curRow++){
@@ -64,6 +63,14 @@ class Game extends JPanel implements ActionListener {
     frame.setContentPane(this);
     frame.setSize(dim);
     frame.setVisible(true);
+  }
+
+  public void rebuild(){
+    for (int row=0; row<buttonBoard.length; row++){
+      for (int col=0; col<buttonBoard[0].length; col++){
+        Piece curPiece = (Piece) board[row][col]
+      }
+    }
   }
 
 
