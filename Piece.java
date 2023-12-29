@@ -9,7 +9,7 @@ class Piece{
   private String icon;
   private final String path = "Icons/";
   protected int team;
-  protected boolean canAct = true;;
+  protected boolean canAct = true;
   private int[][] check  = {
     {-1,-1},
     {-1,1},
@@ -64,24 +64,20 @@ class Piece{
       if (board[square[0]][square[1]].getPiece()!=null){
         squares.remove(i);
         i--;
-      }
-      
+      } 
     }
-    
-    
     return squares;
   }
 
   public BufferedImage getImage(){
-    BufferedImage returnImage = new BufferedImage(Game.sqaure, Game.sqaure, BufferedImage.TYPE_3BYTE_BGR);
+    BufferedImage returnImage = new BufferedImage(Game.smallSquare, Game.smallSquare, BufferedImage.TYPE_3BYTE_BGR);
     try{
       returnImage = ImageIO.read(new File(icon));
     } catch(Exception e){
       e.printStackTrace();
     }
-    
-    Image image = returnImage.getScaledInstance(Game.sqaure, Game.sqaure, Image.SCALE_SMOOTH);
-    returnImage = new BufferedImage(Game.sqaure, Game.sqaure, BufferedImage.TYPE_3BYTE_BGR);
+    Image image = returnImage.getScaledInstance(Game.smallSquare, Game.smallSquare, Image.SCALE_SMOOTH);
+    returnImage = new BufferedImage(Game.smallSquare, Game.smallSquare, BufferedImage.TYPE_3BYTE_BGR);
     returnImage.getGraphics().drawImage(image, 0, 0, null);
     return returnImage;
   }

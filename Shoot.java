@@ -14,8 +14,9 @@ class Shoot extends Piece implements Shootable{
     for (int i=0; i<squares.size(); i++){
       int[] square = squares.get(i);
       Piece piece = (Piece) board[square[0]][square[1]].getPiece();
-      if (piece==null||piece.getTeam()==team){
-        squares.remove(square);
+      if (piece!=null&&piece.getTeam()==team){
+        squares.remove(i);
+        i--;
       }
     }
     return squares;
