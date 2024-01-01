@@ -27,7 +27,7 @@ class Coordinate{
   }
 
   public void setFreeze(){
-    isFreeze = 3;
+    isFreeze = 2;
   }
   
   public boolean turn(){

@@ -25,6 +25,18 @@ class Piece{
     this.icon = path+icon;
     this.team = team;
   }
+
+  public boolean getAct(){
+    return canAct;
+  }
+
+  public void setAct(){
+    canAct = !canAct;
+  }
+
+  public void setAct(boolean act){
+    canAct = act;
+  }
     
   public int getTeam(){
     return team;
