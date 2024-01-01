@@ -82,14 +82,14 @@ class Piece{
   }
 
   public BufferedImage getImage(){
-    BufferedImage returnImage = new BufferedImage(Game.smallSquare, Game.smallSquare, BufferedImage.TYPE_3BYTE_BGR);
+    BufferedImage returnImage = new BufferedImage(Game.smallSquare, Game.smallSquare, BufferedImage.TYPE_INT_ARGB);
     try{
       returnImage = ImageIO.read(new File(icon));
     } catch(Exception e){
       e.printStackTrace();
     }
     Image image = returnImage.getScaledInstance(Game.smallSquare, Game.smallSquare, Image.SCALE_SMOOTH);
-    returnImage = new BufferedImage(Game.smallSquare, Game.smallSquare, BufferedImage.TYPE_3BYTE_BGR);
+    returnImage = new BufferedImage(Game.smallSquare, Game.smallSquare, BufferedImage.TYPE_INT_ARGB);
     returnImage.getGraphics().drawImage(image, 0, 0, null);
     return returnImage;
   }

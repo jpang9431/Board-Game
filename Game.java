@@ -59,6 +59,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     frame.setContentPane(this);
     frame.setSize(dim);
     frame.setVisible(true);
+    System.out.println(smallSquare);
   }
 
   private void updateText(){
@@ -212,6 +213,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     System.out.println("Run");
     Game game = new Game();
     game.startGame();
-
+    //Color color = Color.MAGENTA;
+    //System.out.println(color.getRed()+","+color.getGreen()+","+color.getBlue());
   }
 }
