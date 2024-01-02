@@ -17,17 +17,21 @@ class FreezeShoot extends Piece implements Shootable, Freezable{
   
   public ArrayList<int[]> getShootable(Coordinate[][] board, int row, int col){
     ArrayList<int[]> squares = getSquares(row, col, true, true, 2, 3);
-    ArrayList<int[]> checkSquares = getSquares(row, col, true, true, 1, 2);
     for (int i=0; i<squares.size(); i++){
-      int[] checkSquare = checkSquares.get(i);
-      int[] square = squares.get(i);
-      Piece piece = (Piece) board[square[0]][square[1]].getPiece();
+      int[] checkSquare = {row, col};
+      int[] sqaure = squares.get(i);
+      for (int j=0; j<sqaure.length; j++){
+        if (sqaure[j]<checkSquare[j]){
+          checkSquare[j]--;
+        } else if (sqaure[j]>checkSquare[j]){
+          checkSquare[j]++;
+        }
+      }
       if (board[checkSquare[0]][checkSquare[1]].getPiece()!=null){
         squares.remove(i);
         i--;
-      } 
+      }
     }
-    
     return squares;
   }
 }

@@ -47,6 +47,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
         this.add(buttonBoard[row][col]);
         buttonBoard[row][col].setBounds(col * sqaure, row * square, square, square);
         buttonBoard[row][col].setFocusPainted(false);
+        System.out.println(col * sqaure+square);
       }
     }
     for (int i = 0; i < fileNames.length; i++) {
@@ -69,7 +70,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     tempPanel.setBackground(Color.DARK_GRAY);
     textPanel.add(tempPanel);
     this.add(textPanel);
-    textPanel.setBounds(width-height, 0, widthRemain/4, height);
+    textPanel.setBounds(square*5, 0, square*5, height);
     textPanel.setBackground(Color.DARK_GRAY);
     textPanel.add(flip);
     flip.addActionListener(this);
@@ -176,6 +177,11 @@ class Game extends JPanel implements ActionListener, MouseListener {
 
 
   private void reset(boolean turn){
+    if (turn){
+      teamTurn = teamTurn*-1;
+      updateText();
+      hasFreeze = false;
+    }
     for (int row = 0; row < board.length; row++) {
       for (int col = 0; col < board[0].length; col++) {
         if (board[row][col].isFrozen()){
@@ -191,11 +197,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
         }
       }
     }
-    if (turn){
-      teamTurn = teamTurn*-1;
-      updateText();
-      hasFreeze = false;
-    }
+    
   }
 
   private void setColors(ArrayList<int[]> rowCols, Color color, ArrayList<int[]> altRowCols, Color secColor) {
@@ -243,6 +245,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     int button = e.getButton();
     int row = e.getYOnScreen() / sqaure;
     int col = e.getXOnScreen() / sqaure;
+    
     if (row > board.length-1){
       row = board.length-1;
     } 
@@ -251,7 +254,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     Piece curPiece = (Piece) curCoordinate.getPiece();
     JButton buttonClicked = buttonBoard[row][col];
     Color color = buttonClicked.getBackground();
-    if (curPiece != null && (color.equals(colors[0])||color.equals(colors[1])) && curPiece.getTeam()==teamTurn) {
+    if (curPiece != null && (color.equals(colors[0])||color.equals(colors[1])) ) {
       if (button == MouseEvent.BUTTON1) {
         ArrayList<int[]> squares = curPiece.move(board, row, col);
         setColors(squares, pieceColors[2], new ArrayList<int[]>(), null);
