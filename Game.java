@@ -11,23 +11,22 @@ import java.awt.event.*;
 class Game extends JPanel implements ActionListener, MouseListener {
   private Coordinate[][] board = new Coordinate[5][5];
   private JButton[][] buttonBoard = new JButton[5][5];
-  private ArrayList<Object> team1 = new ArrayList<Object>(), team2 = new ArrayList<Object>();
   private String[] fileNames = { "BS.png", "BF.png", "BFS.png", "BF.png", "BS.png" },
       altFileNames = { "WS.png", "WF.png", "WFS.png", "WF.png", "WS.png" };
-  private Color[] pieceColors = { Color.RED, Color.CYAN, Color.GREEN }, colors = { Color.WHITE, Color.BLACK };
-  private int teamTurn = -1, size;
+  private Color[] pieceColors = { Color.RED, Color.CYAN, Color.GREEN }, colors = { Color.WHITE, Color.BLACK }, teamColors = {Color.YELLOW, Color.MAGENTA};
+  private int teamTurn = 1, numPieces1 = 5, numPieces2 = 5;
   private static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
   public static final int width = dim.width, height = dim.height - 20, sqaure = height / 5, boardSize = 5,
-      square = sqaure, smallSquare = height / 6, MOVE = 2, SHOOT = 0, FREEZE = 1;
+      square = sqaure, smallSquare = height / 6, MOVE = 2, SHOOT = 0, FREEZE = 1, widthRemain = width - height;
   private JFrame frame = new JFrame();
-  private boolean isLeft = false, hasFreeze = false;
-  private ArrayList<Coordinate> changedSquares = new ArrayList<Coordinate>();
+  private boolean hasFreeze = false;
   private Coordinate seletecCord = null;
   private final Color freeze = Color.BLUE, noUse = Color.GRAY;
-  private final String label1 = "Turn:\n";
   private final Font font = new Font(Font.DIALOG, Font.PLAIN, sqaure/5);
-  private JLabel turnLabel = new JLabel(label1+teamTurn, JLabel.CENTER);
+  private JPanel textPanel = new JPanel();
+  private JLabel turnLabel = new JLabel("", JLabel.CENTER), numTeam1 = new JLabel("", JLabel.CENTER), numTeam2  = new JLabel("", JLabel.CENTER), randomSeperator = new JLabel(" vs ", JLabel.CENTER);
   public void startGame() {
+    this.setBackground(Color.DARK_GRAY);
     this.setSize(dim);
     this.setLayout(null);
     int team = -1;
@@ -46,28 +45,49 @@ class Game extends JPanel implements ActionListener, MouseListener {
         buttonBoard[row][col].setBackground(color);
         this.add(buttonBoard[row][col]);
         buttonBoard[row][col].setBounds(col * sqaure, row * square, square, square);
+        buttonBoard[row][col].setFocusPainted(false);
       }
     }
     for (int i = 0; i < fileNames.length; i++) {
       setPiece(0, i, fileNames[i], -1);
       setPiece(buttonBoard.length - 1, i, altFileNames[i], 1);
     }
+    textPanel.setLayout(new GridLayout(0,1));
+    textPanel.add(turnLabel);
     turnLabel.setFont(font);
-    this.add(turnLabel);
-    turnLabel.setBounds(square*5, 0, sqaure, sqaure);
+    JPanel tempPanel = new JPanel();
+    tempPanel.add(numTeam1);
+    numTeam1.setForeground(teamColors[0]);
+    numTeam1.setFont(font);
+    tempPanel.add(randomSeperator);
+    randomSeperator.setFont(font);
+    randomSeperator.setForeground(new Color(0, 128, 128));
+    tempPanel.add(numTeam2);
+    numTeam2.setForeground(teamColors[1]);
+    numTeam2.setFont(font);
+    tempPanel.setBackground(Color.DARK_GRAY);
+    textPanel.add(tempPanel);
+    this.add(textPanel);
+    textPanel.setBounds(width-height, 0, widthRemain/4, height);
+    textPanel.setBackground(Color.DARK_GRAY);
     updateText();
     frame.setContentPane(this);
     frame.setSize(dim);
     frame.setVisible(true);
-    System.out.println(smallSquare);
   }
 
+
+
   private void updateText(){
-    int textInt = teamTurn;
-    if (teamTurn==-1){
-      textInt = 2;
-    } 
-    turnLabel.setText(label1+" "+textInt);
+    if (teamTurn==1){
+      turnLabel.setText("<html>Team 1 turn<html>");
+      turnLabel.setForeground(teamColors[0]);
+    } else {
+      turnLabel.setText("<html>Team 2 turn<html>");
+      turnLabel.setForeground(teamColors[1]);
+    }
+    numTeam1.setText(String.valueOf(numPieces1));
+    numTeam2.setText(String.valueOf(numPieces2));
   }
   
   private void setPiece(int row, int col, String fileName, int team) {
@@ -84,6 +104,14 @@ class Game extends JPanel implements ActionListener, MouseListener {
   }
 
   private void shoot(Coordinate cord){
+    Piece piece = (Piece) cord.getPiece();
+    if (piece!=null){
+      if (piece.getTeam()==1){
+        numPieces1--;
+      } else if (piece.getTeam()==-1){
+        numPieces2--;
+      }
+    }
     cord.setPiece(null);
     buttonBoard[cord.getRow()][cord.getCol()].setIcon(null);
     reset(true);
@@ -97,6 +125,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     buttonBoard[seletecCord.getRow()][seletecCord.getCol()].setIcon(null);
     reset(true);
   }
+
 
   private void reset(boolean turn){
     for (int row = 0; row < board.length; row++) {
@@ -117,6 +146,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     if (turn){
       teamTurn = teamTurn*-1;
       updateText();
+      hasFreeze = false;
     }
   }
 
@@ -189,7 +219,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
         }
       }
       seletecCord = curCoordinate;
-    } else if (color.equals(pieceColors[1])){
+    } else if (color.equals(pieceColors[1])&&!hasFreeze){
       freeze(curCoordinate);
     } else if (color.equals(pieceColors[0])){
       shoot(curCoordinate);
@@ -213,7 +243,5 @@ class Game extends JPanel implements ActionListener, MouseListener {
     System.out.println("Run");
     Game game = new Game();
     game.startGame();
-    //Color color = Color.MAGENTA;
-    //System.out.println(color.getRed()+","+color.getGreen()+","+color.getBlue());
   }
 }
