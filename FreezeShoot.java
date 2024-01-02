@@ -25,11 +25,9 @@ class FreezeShoot extends Piece implements Shootable, Freezable{
       if (board[checkSquare[0]][checkSquare[1]].getPiece()!=null){
         squares.remove(i);
         i--;
-      } else if (piece!=null&&piece.getTeam()==team){
-        squares.remove(i);
-        i--;
-      }
+      } 
     }
+    
     return squares;
   }
 }

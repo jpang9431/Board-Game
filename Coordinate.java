@@ -32,6 +32,10 @@ class Coordinate{
     return isFreeze>0;
   }
 
+  public void setFreeze(int amount){
+    isFreeze = amount;
+  }
+  
   public void setFreeze(){
     isFreeze = 2;
   }
@@ -41,6 +45,10 @@ class Coordinate{
       isFreeze--;
     }
     return isFrozen();
+  }
+
+  public int getFreeze(){
+    return isFreeze;
   }
   
   public Object getPiece(){

@@ -11,8 +11,8 @@ import java.awt.event.*;
 class Game extends JPanel implements ActionListener, MouseListener {
   private Coordinate[][] board = new Coordinate[5][5];
   private JButton[][] buttonBoard = new JButton[5][5];
-  private String[] fileNames = { "BS.png", "BF.png", "BFS.png", "BF.png", "BS.png" },
-      altFileNames = { "WS.png", "WF.png", "WFS.png", "WF.png", "WS.png" };
+  private String[] fileNames = { "BF.png", "BS.png", "BFS.png", "BS.png", "BF.png" },
+      altFileNames = { "WF.png", "WS.png", "WFS.png",  "WS.png", "WF.png" };
   private Color[] pieceColors = { Color.RED, Color.CYAN, Color.GREEN }, colors = { Color.WHITE, Color.BLACK }, teamColors = {Color.YELLOW, Color.MAGENTA};
   private int teamTurn = 1, numPieces1 = 5, numPieces2 = 5;
   private static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -25,6 +25,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
   private final Font font = new Font(Font.DIALOG, Font.PLAIN, sqaure/5);
   private JPanel textPanel = new JPanel();
   private JLabel turnLabel = new JLabel("", JLabel.CENTER), numTeam1 = new JLabel("", JLabel.CENTER), numTeam2  = new JLabel("", JLabel.CENTER), randomSeperator = new JLabel(" vs ", JLabel.CENTER);
+  private JButton flip = new JButton("Flip");
   public void startGame() {
     this.setBackground(Color.DARK_GRAY);
     this.setSize(dim);
@@ -70,14 +71,61 @@ class Game extends JPanel implements ActionListener, MouseListener {
     this.add(textPanel);
     textPanel.setBounds(width-height, 0, widthRemain/4, height);
     textPanel.setBackground(Color.DARK_GRAY);
+    textPanel.add(flip);
+    flip.addActionListener(this);
     updateText();
     frame.setContentPane(this);
     frame.setSize(dim);
     frame.setVisible(true);
   }
 
+  private void flip(){
+    ArrayList<int[]> pieceCords = new ArrayList<int[]>();
+    ArrayList<Piece> pieces = new ArrayList<Piece>();
+    ArrayList<int[]> freezeCords = new ArrayList<int[]>();
+    ArrayList<int[]> noUseCords = new ArrayList<int[]>();
+      
+    for (int row=0; row<board.length; row++){
+      for (int col=0; col<board[0].length; col++){
+        Piece piece =  (Piece) board[row][col].getPiece();
+        int[] addCord = {4-row, col};
+        Color color = buttonBoard[row][col].getBackground();
+        if (piece!=null){
+          pieceCords.add(addCord);
+          pieces.add(piece);
+          board[row][col].setPiece(null);
+          buttonBoard[row][col].setIcon(null);
+          buttonBoard[row][col].setBackground(null);
+        }
+        if (color.equals(freeze)){
+          int[] addFreeze = new int[3];
+          addFreeze[0] = addCord[0];
+          addFreeze[1] = addCord[1];
+          addFreeze[2] = board[row][col].getFreeze();
+          freezeCords.add(addFreeze);
+          board[row][col].setFreeze(0);
+        } else if (color.equals(noUse)){
+          noUseCords.add(addCord);
+        }
+      }
+    }
+    
+    for (int i=0; i<pieceCords.size(); i++){
+      board[pieceCords.get(i)[0]][pieceCords.get(i)[1]].setPiece((Object) pieces.get(i));
+      buttonBoard[pieceCords.get(i)[0]][pieceCords.get(i)[1]].setIcon(new ImageIcon(pieces.get(i).getImage()));
+    }
 
+    for (int j=0; j<freezeCords.size(); j++){
+      board[freezeCords.get(j)[0]][freezeCords.get(j)[1]].setFreeze(freezeCords.get(j)[2]);
+    }
+ 
+    reset(false);
 
+    for (int k=0; k<noUseCords.size(); k++){
+      buttonBoard[noUseCords.get(k)[0]][noUseCords.get(k)[1]].setBackground(noUse);
+    }
+  }
+  
   private void updateText(){
     if (teamTurn==1){
       turnLabel.setText("<html>Team 1 turn<html>");
@@ -177,7 +225,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-
+    flip();
   }
 
   public ArrayList<int[]> getFreeze(Freezable piece, int row, int col) {
@@ -195,6 +243,9 @@ class Game extends JPanel implements ActionListener, MouseListener {
     int button = e.getButton();
     int row = e.getYOnScreen() / sqaure;
     int col = e.getXOnScreen() / sqaure;
+    if (row > board.length-1){
+      row = board.length-1;
+    } 
     Coordinate curCoordinate = board[row][col];
     Object objPiece = curCoordinate.getPiece();
     Piece curPiece = (Piece) curCoordinate.getPiece();
@@ -241,7 +292,33 @@ class Game extends JPanel implements ActionListener, MouseListener {
 
   public static void main(String[] args) {
     System.out.println("Run");
+    //testing();
     Game game = new Game();
     game.startGame();
+  }
+  public static void testing(){
+    JFrame frame = new JFrame("Frame");
+    
+    Menu menu = new Menu(new String[]{"Icons/BF.png", "Icons/BFS.png", "Icons/BS.png"}, Game::randomMethod);
+
+    frame.setContentPane(menu);
+    frame.setSize(width, height);
+    //frame.pack();
+    frame.setVisible(true);
+    
+    
+  }
+  public static void randomMethod(int i){
+    System.out.println(i);
+  }
+  public void menu(){
+    Menu menu = new Menu(new String[0], this::clicked);
+    Tutorial tut = new Tutorial(this::setMenu);
+  }
+  public void clicked(int item){
+    //TODO
+  }
+  public void setMenu(){
+    //TODO
   }
 }

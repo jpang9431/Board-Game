@@ -65,11 +65,11 @@ class Piece{
     return squares;
   }
 
-  public ArrayList<int[]>move(Coordinate[][] board, int row, int col){
+  public ArrayList<int[]> move(Coordinate[][] board, int row, int col){
     return null;
   }
   
-  public ArrayList<int[]>move(Coordinate[][] board, int row, int col, boolean card, boolean diag, int min, int max){
+  public ArrayList<int[]> move(Coordinate[][] board, int row, int col, boolean card, boolean diag, int min, int max){
     ArrayList<int[]> squares = getSquares(row, col, card, diag, min, max);
     for (int i=0; i<squares.size(); i++){
       int[] square = squares.get(i);
