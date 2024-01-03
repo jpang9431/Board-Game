@@ -15,17 +15,17 @@ class Game extends JPanel implements ActionListener, MouseListener {
       altFileNames = { "WF.png", "WS.png", "WFS.png",  "WS.png", "WF.png" };
   private Color[] pieceColors = { Color.RED, Color.CYAN, Color.GREEN }, colors = { Color.WHITE, Color.BLACK }, teamColors = {Color.YELLOW, Color.MAGENTA};
   private int teamTurn = 1, numPieces1 = 5, numPieces2 = 5;
-  private static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+  public static final Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
   public static final int width = dim.width, height = dim.height - 20, sqaure = height / 5, boardSize = 5,
       square = sqaure, smallSquare = height / 6, MOVE = 2, SHOOT = 0, FREEZE = 1, widthRemain = width - height;
-  private JFrame frame = new JFrame();
   private boolean hasFreeze = false;
   private Coordinate seletecCord = null;
-  private final Color freeze = Color.BLUE, noUse = Color.GRAY;
-  private final Font font = new Font(Font.DIALOG, Font.PLAIN, sqaure/5);
+  private final Color freeze = Color.BLUE, noUse = Color.GRAY, teal = new Color(0, 128, 128);
+  private final Font font = new Font(Font.DIALOG, Font.PLAIN, sqaure/2);
   private JPanel textPanel = new JPanel();
   private JLabel turnLabel = new JLabel("", JLabel.CENTER), numTeam1 = new JLabel("", JLabel.CENTER), numTeam2  = new JLabel("", JLabel.CENTER), randomSeperator = new JLabel(" vs ", JLabel.CENTER);
   private JButton flip = new JButton("Flip");
+  private boolean doFlip = true;
   public void startGame() {
     this.setBackground(Color.DARK_GRAY);
     this.setSize(dim);
@@ -47,7 +47,6 @@ class Game extends JPanel implements ActionListener, MouseListener {
         this.add(buttonBoard[row][col]);
         buttonBoard[row][col].setBounds(col * sqaure, row * square, square, square);
         buttonBoard[row][col].setFocusPainted(false);
-        System.out.println(col * sqaure+square);
       }
     }
     for (int i = 0; i < fileNames.length; i++) {
@@ -63,21 +62,21 @@ class Game extends JPanel implements ActionListener, MouseListener {
     numTeam1.setFont(font);
     tempPanel.add(randomSeperator);
     randomSeperator.setFont(font);
-    randomSeperator.setForeground(new Color(0, 128, 128));
+    randomSeperator.setForeground(teal);
     tempPanel.add(numTeam2);
     numTeam2.setForeground(teamColors[1]);
     numTeam2.setFont(font);
     tempPanel.setBackground(Color.DARK_GRAY);
     textPanel.add(tempPanel);
     this.add(textPanel);
-    textPanel.setBounds(square*5, 0, square*5, height);
+    textPanel.setBounds(square*5, 0, width-square*5, height);
     textPanel.setBackground(Color.DARK_GRAY);
     textPanel.add(flip);
     flip.addActionListener(this);
+    flip.setFont(font);
+    flip.setBackground(teal);
+    flip.setFocusable(false);
     updateText();
-    frame.setContentPane(this);
-    frame.setSize(dim);
-    frame.setVisible(true);
   }
 
   private void flip(){
@@ -197,7 +196,14 @@ class Game extends JPanel implements ActionListener, MouseListener {
         }
       }
     }
+    if (turn&&doFlip){
+      flip();
+    }
     
+  }
+
+  public void noDoFlip(){
+    doFlip = !doFlip;
   }
 
   private void setColors(ArrayList<int[]> rowCols, Color color, ArrayList<int[]> altRowCols, Color secColor) {
@@ -254,7 +260,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
     Piece curPiece = (Piece) curCoordinate.getPiece();
     JButton buttonClicked = buttonBoard[row][col];
     Color color = buttonClicked.getBackground();
-    if (curPiece != null && (color.equals(colors[0])||color.equals(colors[1])) ) {
+    if (curPiece != null && (color.equals(colors[0])||color.equals(colors[1]))&&curPiece.getTeam()==teamTurn) {
       if (button == MouseEvent.BUTTON1) {
         ArrayList<int[]> squares = curPiece.move(board, row, col);
         setColors(squares, pieceColors[2], new ArrayList<int[]>(), null);
