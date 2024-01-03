@@ -21,13 +21,16 @@ class Menu extends JPanel implements MouseListener {
   private int imageNum;
   private Consumer<Integer> listener;
   private String label;
+  private Color txtColor = Color.BLACK;
+  private Color backgroundColor = Color.WHITE;
+  private int imgW = 100, imgH = 100;
 
   /**
    * @param paths takes in paths of pictures and addes them to imageOG, 5 Max
    * @param listener takes in a method that takes in an int and returns void
    **/
   public Menu(String[] paths, Consumer<Integer> listener) {
-    setSize(new Dimension(width, height));
+    setPreferredSize(new Dimension(width, height));
     addMouseListener(this);
     if (paths != null) {
       imageOG = new BufferedImage[paths.length];
@@ -35,18 +38,22 @@ class Menu extends JPanel implements MouseListener {
       for (int i = 0; i < paths.length; i++) {
         try {
           imageOG[i] = (ImageIO.read(new File(paths[i])));
-          rotImage[i] = imageOG[i];
         } catch (Exception e) {
+          imageOG[i] = createImageFromString(paths[i], width, height);
           e.printStackTrace();
+        }finally{
+          rotImage[i] = imageOG[i];
         }
       }
     } else {
       for (int i = 0; i < imageOG.length; i++) {
         try {
           imageOG[i] = (ImageIO.read(alive));
-          rotImage[i] = imageOG[i];
         } catch (Exception e) {
+          imageOG[i] = createImageFromString("Placeholder", width, height);
           e.printStackTrace();
+        }finally{
+          rotImage[i] = imageOG[i];
         }
       }
     }
@@ -74,8 +81,37 @@ class Menu extends JPanel implements MouseListener {
     timer.start();
   }
 
-  public Menu(String[] paths, Consumer<Integer> listener, String label){
+  public Menu(String[] paths, Consumer<Integer> listener, String label) {
     this(paths, listener);
+    this.label = label;
+  }
+  
+  public Menu(String[] paths, Consumer<Integer> listener, String label, Color txtColor, Color backgroundColor){
+    this(paths, listener, label);
+    this.txtColor = txtColor;
+    this.backgroundColor = backgroundColor;
+  }
+  /**
+   * @param paths array of strings for file paths or strings to be made into images (if not a valid path)
+   * @param listener method to be called back to once item is clicked
+   * @param label text to be displayed at the top of the screen
+   * @param txtColor text color for creation of images, unused if all paths are valid
+   * @param backgroundColor background color for creation of images, unused if all paths are valid
+   * @param width default width for the images (autoresizes)
+   * @param height default height of images (autoresizes)
+  **/
+  public Menu(String[] paths, Consumer<Integer> listener, String label, Color txtColor, Color backgroundColor, int width, int height){
+    this(paths, listener, label, txtColor, backgroundColor);
+    imgW = width;
+    imgH = height;
+  }
+  public Menu(String[] paths, Consumer<Integer> listener, int width, int height){
+    this(paths, listener);
+    imgW = width;
+    imgH = height;
+  }
+  public Menu(String[] paths, Consumer<Integer> listener, String label, int width, int height){
+    this(paths, listener, width, height);
     this.label = label;
   }
 
@@ -84,13 +120,13 @@ class Menu extends JPanel implements MouseListener {
     super.paintComponent(g);
     Graphics2D g2d = (Graphics2D) g;
 
-    if(label!=null){
+    if (label != null) {
       Font oldFont = g.getFont();
       Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
       g.setFont(font);
       FontMetrics fontMetric = g2d.getFontMetrics(font);
-      int x = (width - fontMetric.stringWidth(label))/2;
-      int y = ((height - fontMetric.getHeight())/2)+fontMetric.getAscent()-200;
+      int x = (width - fontMetric.stringWidth(label)) / 2;
+      int y = ((height - fontMetric.getHeight()) / 2) + fontMetric.getAscent() - 200;
       g2d.drawString(label, x, y);
       g.setFont(oldFont);
     }
@@ -106,6 +142,53 @@ class Menu extends JPanel implements MouseListener {
       }
 
     }
+  }
+
+  public BufferedImage createImageFromString(String str, int width, int height) {
+    Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
+    Canvas c = new Canvas();
+    FontMetrics fontMetric = c.getFontMetrics(font);
+
+    BufferedImage newImg;
+    int x;
+    int fill;
+    if(fontMetric.stringWidth(str)<width){
+      newImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+      x = (width - fontMetric.stringWidth(str))/2;
+      fill = width;
+    }else{
+      newImg = new BufferedImage((int)(fontMetric.stringWidth(str)*1.1), height, BufferedImage.TYPE_INT_ARGB);
+      x = 0;
+      fill = fontMetric.stringWidth(str);
+    }
+
+    Graphics2D g2d =  newImg.createGraphics();
+    Font oldFont = g2d.getFont();
+
+    g2d.setColor(backgroundColor);
+    g2d.fillRect(0,0, fill, height);
+
+    g2d.setFont(font);
+    g2d.setColor(txtColor);
+
+    int y = ((height - fontMetric.getHeight()) / 2) + fontMetric.getAscent();
+    g2d.drawString(str, x, y);
+
+    g2d.setFont(oldFont);
+
+    return resize(newImg, width, height);
+  }
+  //https://stackoverflow.com/questions/9417356/bufferedimage-resize
+  public BufferedImage resize(BufferedImage img, int newW, int newH) {
+    int w = img.getWidth();
+    int h = img.getHeight();
+    BufferedImage dimg = new BufferedImage(newW, newH, img.getType());
+    Graphics2D g = dimg.createGraphics();
+    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g.drawImage(img, 0, 0, newW, newH, 0, 0, w, h, null);
+    g.dispose();
+    return dimg;
   }
 
   public BufferedImage rotateImageByDegrees(BufferedImage img, double angle, double scale) {
@@ -134,7 +217,7 @@ class Menu extends JPanel implements MouseListener {
     return rotated;
   }
 
-  public void setText(String string){
+  public void setText(String string) {
     label = string;
   }
 
@@ -178,5 +261,53 @@ class Menu extends JPanel implements MouseListener {
     if (pic != -1) {
       listener.accept(pic);
     }
+  }
+
+  /*
+  -----------------------------------------------------
+  Start of getters/setters
+  -----------------------------------------------------
+  */
+  public BufferedImage getOGBufferedImage(int i){
+    return imageOG[i];
+  }
+  public BufferedImage getRotatedBufferedImage(int i){
+    return rotImage[i];
+  }
+  public Consumer<Integer> getListener(){
+    return listener;
+  }
+  public void setListener(Consumer<Integer> lstn){
+    listener = lstn;
+  }
+  public String getLabel(){
+    return label;
+  }
+  public void setLabel(String label){
+    this.label = label;
+  }
+  public Color txtColor(){
+    return txtColor;
+  }
+  public void setTxtColor(Color c){
+    txtColor = c;
+  }
+  public Color bgrndColor(){
+    return backgroundColor;
+  }
+  public void setBgrndColor(Color c){
+    backgroundColor = c;
+  }
+  public int targetWidth(){
+    return imgW;
+  }
+  public int targetH(){
+    return imgH;
+  }
+  public void setWidth(int width){
+    imgW = width;
+  }
+  public void setHeight(int height){
+    imgH = height;
   }
 }

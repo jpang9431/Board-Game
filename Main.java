@@ -11,7 +11,7 @@ class Main extends JFrame{
   private Game game = new Game();
   private final String path = "Icons/";
   private String[] choices = {path+"GREENNEXT.png", path+"settings50.png", path+"TUTORIAL.png"};
-  private Menu menu = new Menu(choices, this::choose);
+  private Menu menu = new Menu(choices, this::choose, "Some random game", new Color(0,128,128), Color.DARK_GRAY);
   private Settings settings = new Settings(this);
   public void start(){
     this.setContentPane(menu);
