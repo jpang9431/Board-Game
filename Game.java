@@ -26,6 +26,10 @@ class Game extends JPanel implements ActionListener, MouseListener {
   private JLabel turnLabel = new JLabel("", JLabel.CENTER), numTeam1 = new JLabel("", JLabel.CENTER), numTeam2  = new JLabel("", JLabel.CENTER), randomSeperator = new JLabel(" vs ", JLabel.CENTER);
   private JButton flip = new JButton("Flip");
   private boolean doFlip = true;
+  private Main main = null;
+  public void setMain(Main main){
+    this.main = main;
+  }
   public void startGame() {
     this.setBackground(Color.DARK_GRAY);
     this.setSize(dim);
@@ -137,6 +141,14 @@ class Game extends JPanel implements ActionListener, MouseListener {
     numTeam1.setText(String.valueOf(numPieces1));
     numTeam2.setText(String.valueOf(numPieces2));
   }
+
+  public void getWin(){
+    if (numPieces1==0){
+      main.end(2);
+    } else if (numPieces2==0){
+      main.end(1);
+    } 
+  }
   
   private void setPiece(int row, int col, String fileName, int team) {
     Piece piece = getInstance(fileName, team);
@@ -180,6 +192,7 @@ class Game extends JPanel implements ActionListener, MouseListener {
       teamTurn = teamTurn*-1;
       updateText();
       hasFreeze = false;
+      getWin();
     }
     for (int row = 0; row < board.length; row++) {
       for (int col = 0; col < board[0].length; col++) {

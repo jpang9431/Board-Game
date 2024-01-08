@@ -21,8 +21,8 @@ class Menu extends JPanel implements MouseListener {
   private int imageNum;
   private Consumer<Integer> listener;
   private String label;
-  private Color txtColor = Color.BLACK;
-  private Color backgroundColor = Color.WHITE;
+  private Color txtColor = new Color(0,128,128);
+  private Color backgroundColor = Color.DARK_GRAY;
   private int imgW = 100, imgH = 100;
 
   /**
@@ -37,7 +37,7 @@ class Menu extends JPanel implements MouseListener {
       rotImage = new BufferedImage[paths.length];
       for (int i = 0; i < paths.length; i++) {
         try {
-          imageOG[i] = (ImageIO.read(new File(paths[i])));
+          imageOG[i] = resize(ImageIO.read(new File(paths[i])), imgW, imgH);
         } catch (Exception e) {
           imageOG[i] = createImageFromString(paths[i], width, height);
           e.printStackTrace();
@@ -124,6 +124,7 @@ class Menu extends JPanel implements MouseListener {
       Font oldFont = g.getFont();
       Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 30);
       g.setFont(font);
+      g.setColor(new Color(0,128,128));
       FontMetrics fontMetric = g2d.getFontMetrics(font);
       int x = (width - fontMetric.stringWidth(label)) / 2;
       int y = ((height - fontMetric.getHeight()) / 2) + fontMetric.getAscent() - 200;
@@ -182,7 +183,7 @@ class Menu extends JPanel implements MouseListener {
   public BufferedImage resize(BufferedImage img, int newW, int newH) {
     int w = img.getWidth();
     int h = img.getHeight();
-    BufferedImage dimg = new BufferedImage(newW, newH, img.getType());
+    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = dimg.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
         RenderingHints.VALUE_INTERPOLATION_BILINEAR);

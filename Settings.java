@@ -14,6 +14,7 @@ class Settings extends JPanel implements ActionListener{
   private JButton[] button = new JButton[isOn.length];
   private Main game = null;
   private Color teal = new Color(0,128,128);
+  private Font font = new Font(Font.DIALOG, Font.PLAIN, 30);
   Settings(Main game){
     this.game = game;
     this.setSize(Game.dim);
@@ -30,6 +31,7 @@ class Settings extends JPanel implements ActionListener{
       button[i].setForeground(teal);
       button[i].setBackground(Color.gray);
       button[i].setFocusPainted(false);
+      button[i].setFont(font);
       this.add(button[i]);
     }
     JButton back = new JButton("Back");
@@ -37,6 +39,7 @@ class Settings extends JPanel implements ActionListener{
     back.setBackground(Color.DARK_GRAY);
     back.addActionListener(this);
     back.setActionCommand("Back");
+    back.setFont(font);
     this.add(back);
   }
   public void actionPerformed(ActionEvent e) {
