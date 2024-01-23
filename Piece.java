@@ -5,9 +5,8 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import java.awt.*;
 class Piece{
-  private ArrayList<int[]> tempArray = new ArrayList<int[]>();
   private String icon;
-  private final String path = "Icons/";
+  private final String PATH = "Icons/";
   protected int team;
   protected boolean canAct = true;
   private int[][] check  = {
@@ -22,7 +21,7 @@ class Piece{
   };
   
   Piece(String icon, int team){
-    this.icon = path+icon;
+    this.icon = PATH+icon;
     this.team = team;
   }
 
@@ -42,7 +41,7 @@ class Piece{
     return team;
   }
 
-  public ArrayList<int[]> getSquares(int row, int col, boolean card, boolean diag, int min, int max){
+  protected ArrayList<int[]> getSquares(int row, int col, boolean card, boolean diag, int min, int max){
     ArrayList<int[]> squares = new ArrayList<int[]>();
     int checkMax = 8;
     int checkMin = 0;
@@ -69,7 +68,7 @@ class Piece{
     return null;
   }
   
-  public ArrayList<int[]> move(Coordinate[][] board, int row, int col, boolean card, boolean diag, int min, int max){
+  protected ArrayList<int[]> move(Coordinate[][] board, int row, int col, boolean card, boolean diag, int min, int max){
     ArrayList<int[]> squares = getSquares(row, col, card, diag, min, max);
     for (int i=0; i<squares.size(); i++){
       int[] square = squares.get(i);
@@ -82,7 +81,7 @@ class Piece{
   }
 
   public BufferedImage getImage(){
-    BufferedImage returnImage = new BufferedImage(Game.smallSquare, Game.smallSquare, BufferedImage.TYPE_INT_ARGB);
+    BufferedImage returnImage = null;
     try{
       returnImage = ImageIO.read(new File(icon));
     } catch(Exception e){
